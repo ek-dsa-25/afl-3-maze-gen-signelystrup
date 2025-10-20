@@ -15,6 +15,7 @@ class Cell {
             left: true,
         };
         this.visited = false;
+        this.random = false;
     }
 
     draw(ctx, cellWidth) {
@@ -26,14 +27,14 @@ class Cell {
         const py = this.y * cellWidth;
 
 
+
         ctx.fillStyle = this.random ? "DarkOrange" : "DarkSlateGrey";
-        //ctx.fillStyle = "rgb(255, " + (255-fillColor) + ", " + (255-fillColor) + ")";
         ctx.fillRect(px, py, px + cellWidth, py + cellWidth);
         
         console.log("random? ", this.random);
-        /*
+        
         if(this.random && Math.random() < 0.25){
-            const spriteNumber = randomInteger(0,3);
+            const spriteNumber = randomInteger(0,4);
             const sprite = new Image();
 
             if (spriteNumber === 0){
@@ -47,7 +48,7 @@ class Cell {
             }
 
             ctx.drawImage(sprite, px, py, cellWidth, cellWidth);
-        }*/
+        }
 
         ctx.moveTo(px, py);
 
@@ -170,6 +171,8 @@ class Maze {
     }
 
     draw() {
+        this.ctx.clearRect(0,0,this.canvas.with, this.canvas.width);
+
         for (let i = 0; i < this.rows; i += 1) {
             for (let j = 0; j < this.cols; j += 1) {
                 this.grid[i][j].draw(this.ctx, this.cellWidth);
@@ -181,31 +184,46 @@ class Maze {
         const start_x = randomInteger(0, this.cols);
         const start_y = randomInteger(0, this.rows);
         let currentCell = this.grid[start_x][start_y];
+        let currentIndex = 0;
         let stack = [];
+        const randomness = 0.25;
 
         currentCell.visited = true;
 
-        // Get unvisited neighbors
-        // If there are unvisited neighbors:
-        // - pick a random one of them
-        // - carve a hole through the wall
-        // - push current cell on stack
-        // - make that neighbor the current cell
-        // If not, make the top of stack the current cell
-        // If still not, you're done
-
         while (currentCell != null) {
-            let unvisitedNeighbors = currentCell.unvisitedNeighbors(this.grid);
-            if (unvisitedNeighbors.length > 0) {
-                const randomNeighborCell = unvisitedNeighbors[randomInteger(0, unvisitedNeighbors.length)];
-                currentCell.punchWallDown(randomNeighborCell);
-                stack.push(currentCell);
-                currentCell = randomNeighborCell;
+            let unvisitedNeighbors = currentCell.unvisitedNeighbors(this.grid);// Get unvisited neighbors
+
+            if (unvisitedNeighbors.length > 0) {// If there are unvisited neighbors:
+                const randomNeighborCell = unvisitedNeighbors[randomInteger(0, unvisitedNeighbors.length)];// - pick a random neighbor
+                currentCell.punchWallDown(randomNeighborCell);// - carve a hole through the wall
+
+                stack.push(currentCell);// - push current cell on stack
+                currentCell = randomNeighborCell;// - make that neighbor the current cell
                 currentCell.visited = true;
+                currentIndex ++;
+
             } else {
-                currentCell = stack.pop();
+
+                if (Math.random() < randomness){ //25% chance to pick a random cell in stack.
+                    const randomIndex = randomInteger(0, stack.length);
+                    currentCell = stack[randomIndex];
+                    stack.splice(randomIndex, 1);
+
+                    if (currentCell != null){
+                    currentCell.random = true;
+                    console.log("picked random cell, ", currentCell);
+                    }
+
+                }else{
+                    currentCell = stack.pop();
+                }
+
             }
-        }
+            
+            //this.draw();
+            setInterval(10);
+
+        }//end of while
     }
 }
 
@@ -213,7 +231,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById('canvas');
     const maze = new Maze(20, 20, canvas);
 
-    // TODO: Fjern nogle af væggene på en smart måde.
     maze.generate();
 
     maze.draw();
