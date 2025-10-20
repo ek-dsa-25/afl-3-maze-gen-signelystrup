@@ -30,9 +30,24 @@ class Cell {
         //ctx.fillStyle = "rgb(255, " + (255-fillColor) + ", " + (255-fillColor) + ")";
         ctx.fillRect(px, py, px + cellWidth, py + cellWidth);
         
+        console.log("random? ", this.random);
+        /*
         if(this.random && Math.random() < 0.25){
-            
-        }
+            const spriteNumber = randomInteger(0,3);
+            const sprite = new Image();
+
+            if (spriteNumber === 0){
+                sprite.src = "sprites/pumpkin.png";
+            }else if (spriteNumber === 1){
+                sprite.src = "sprites/spider.png";
+            }else if (spriteNumber === 2){
+                sprite.src = "sprites/web.png";
+            }else if (spriteNumber === 3){
+                sprite.src = "sprites/witch.png";
+            }
+
+            ctx.drawImage(sprite, px, py, cellWidth, cellWidth);
+        }*/
 
         ctx.moveTo(px, py);
 
