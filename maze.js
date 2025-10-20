@@ -20,22 +20,22 @@ class Cell {
 
     draw(ctx, cellWidth) {
         ctx.strokeStyle = '#000000';
-        ctx.lineWidth = 4;
+        ctx.lineWidth = 2;
         ctx.beginPath();
 
         const px = this.x * cellWidth;
         const py = this.y * cellWidth;
 
-
-
+        //if a random cell was picked from stack, paint that cell orange.
         ctx.fillStyle = this.random ? "DarkOrange" : "DarkSlateGrey";
         ctx.fillRect(px, py, px + cellWidth, py + cellWidth);
         
         console.log("random? ", this.random);
         
-        if(this.random && Math.random() < 0.25){
+        //draw halloween sprites
+        if(Math.random() < 0.1){
             const spriteNumber = randomInteger(0,4);
-            const sprite = new Image();
+            const sprite = new Image(cellWidth, cellWidth);
 
             if (spriteNumber === 0){
                 sprite.src = "sprites/pumpkin.png";
@@ -207,11 +207,10 @@ class Maze {
                 if (Math.random() < randomness){ //25% chance to pick a random cell in stack.
                     const randomIndex = randomInteger(0, stack.length);
                     currentCell = stack[randomIndex];
-                    stack.splice(randomIndex, 1);
+                    stack.splice(randomIndex, 1); //remove randomly selected cell from stack.
 
                     if (currentCell != null){
-                    currentCell.random = true;
-                    console.log("picked random cell, ", currentCell);
+                        currentCell.random = true;
                     }
 
                 }else{
