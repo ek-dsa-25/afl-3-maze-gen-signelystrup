@@ -25,6 +25,15 @@ class Cell {
         const px = this.x * cellWidth;
         const py = this.y * cellWidth;
 
+
+        ctx.fillStyle = this.random ? "DarkOrange" : "DarkSlateGrey";
+        //ctx.fillStyle = "rgb(255, " + (255-fillColor) + ", " + (255-fillColor) + ")";
+        ctx.fillRect(px, py, px + cellWidth, py + cellWidth);
+        
+        if(this.random && Math.random() < 0.25){
+            
+        }
+
         ctx.moveTo(px, py);
 
         if (this.walls.left) {
